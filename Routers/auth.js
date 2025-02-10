@@ -12,10 +12,9 @@ const auth = async (req, res, next) => {
       return res.status(403).json({ message: "Failed to decode token" });
     }
 
-    const secretKey =
-      decoded.role === "admin"
-        ? process.env.SECRET_KEY_ADMIN
-        : process.env.SECRET_KEY_USER;
+    const secretKey = decoded.isAdmin
+      ? process.env.SECRET_KEY_ADMIN
+      : process.env.SECRET_KEY_USER;
 
     const verified = jwt.verify(token, secretKey);
     req.user = verified;
