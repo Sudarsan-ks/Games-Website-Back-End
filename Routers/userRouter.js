@@ -147,21 +147,6 @@ router.post("/resendOtp", async (req, res) => {
   }
 });
 
-router.get("/adminDashboard", auth, adminAuth, async (req, res) => {
-  try {
-    const admins = await User.find({ isAdmin: true });
-    const notAnAdmin = await User.find({ isAdmin: false });
-
-    if (!admins || admins.length === 0) {
-      return res.status(404).json({ message: "No admin users found" });
-    }
-    res.status(200).json({ message: "Admin Details", admins, notAnAdmin });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error fetching admin data", error });
-  }
-});
-
 router.put("/makeAnAdmin/:userID", auth, adminAuth, async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(
