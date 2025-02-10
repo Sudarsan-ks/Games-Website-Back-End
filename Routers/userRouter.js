@@ -89,9 +89,9 @@ router.post("/forgotPass", async (req, res) => {
     }
 
     const otp = crypto.randomInt(100000, 999999).toString();
-
+    const expiresAt = new Date(Date.now() + 4 * 60 * 1000);
     await Otp.deleteOne({ email });
-    await Otp.create({ email, otp });
+    await Otp.create({ email, otp, expiresAt });
 
     await sendEmail(email, otp);
 
