@@ -165,6 +165,24 @@ router.put("/makeAnAdmin/:userID", auth, adminAuth, async (req, res) => {
   }
 });
 
+router.put("/removeAdmin/:userID", auth, adminAuth, async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { isAdmin: false },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ message: "User updated to admin", user });
+  } catch (error) {
+    res.status(500).json({ message: "Error in Removing a user from an ADMIN", error });
+  }
+});
+
 router.get("/userDetails", auth, adminAuth, async (req, res) => {
   try {
     const user = await User.find();
