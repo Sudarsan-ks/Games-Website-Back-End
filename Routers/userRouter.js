@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../Models/userSchema");
 const router = express.Router();
+const transporter = require("../Routers/email");
 const crypto = require("crypto");
 const Otp = require("../Models/otpSchema");
 const { auth, adminAuth } = require("./auth");
