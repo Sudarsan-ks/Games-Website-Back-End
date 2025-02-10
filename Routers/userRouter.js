@@ -150,7 +150,7 @@ router.post("/resendOtp", async (req, res) => {
 router.put("/makeAnAdmin/:userID", auth, adminAuth, async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(
-      req.params.id,
+      req.params.userID,
       { isAdmin: true },
       { new: true }
     );
@@ -168,7 +168,7 @@ router.put("/makeAnAdmin/:userID", auth, adminAuth, async (req, res) => {
 router.put("/removeAdmin/:userID", auth, adminAuth, async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(
-      req.params.id,
+      req.params.userID,
       { isAdmin: false },
       { new: true }
     );
