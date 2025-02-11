@@ -40,7 +40,7 @@ const io = socketIO(server, {
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
   },
-  transports: ["websocket", "polling"],
+  transports: ["polling", "websocket"],
 });
 
 app.use("/user", userRouter);
