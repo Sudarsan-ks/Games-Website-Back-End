@@ -11,22 +11,13 @@ const gameRouter = require("./Routers/gameRouter");
 const app = express();
 const PORT = process.env.PORT;
 const corsOptions = {
-  origin: (origin, callback) => {
-    const allowedOrigins = [
-      process.env.CLIENT_URL,
-      process.env.CLIENT_URL_NETLIFY,
-    ];
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.log(`Blocked by CORS: ${origin}`);
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  origin: [process.env.CLIENT_URL, process.env.CLIENT_URL_NETLIFY],
+  methods: ["GET", "POST"],
   credentials: true,
-  optionsSuccessStatus: 204,
 };
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 app.use(express.json());
 app.use(cors(corsOptions));
