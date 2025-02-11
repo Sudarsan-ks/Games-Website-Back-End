@@ -4,14 +4,12 @@ const Game = require("../Models/gameSchema");
 const { adminAuth, auth } = require("./auth");
 
 module.exports = (io) => {
-  const gameNamespace = io.of("/game"); 
-
-  gameNamespace.on("connection", (socket) => {
+  io.on("connection", (socket) => {
     console.log("A user connected: " + socket.id);
 
     socket.on("createRoom", async ({ gameType, playerID }) => {
       console.log(`Creating room for ${gameType} by player ${playerID}`);
-      
+
       const roomId = Math.random().toString(36).substring(2, 10);
       const game = new Game({ roomId, gameType, players: [playerID] });
       await game.save();
@@ -31,7 +29,9 @@ module.exports = (io) => {
         game.players.push(playerID);
         await game.save();
         socket.join(roomId);
-        gameNamespace.to(roomId).emit("playerJoined", { players: game.players });
+        gameNamespace
+          .to(roomId)
+          .emit("playerJoined", { players: game.players });
         console.log(`${playerID} joined room ${roomId}`);
       } else {
         socket.emit("error", "Room is full");
@@ -61,7 +61,9 @@ module.exports = (io) => {
           await Game.deleteOne({ _id: game._id });
         } else {
           await game.save();
-          gameNamespace.to(game.roomId).emit("playerLeft", { players: game.players });
+          gameNamespace
+            .to(game.roomId)
+            .emit("playerLeft", { players: game.players });
         }
       }
     });
