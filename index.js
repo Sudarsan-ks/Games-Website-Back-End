@@ -10,24 +10,13 @@ const gameRouter = require("./Routers/gameRouter");
 
 const app = express();
 const PORT = process.env.PORT;
-
-const server = http.createServer(app);
-const io = socketIO(server, {
-  cors: {
-    origin: [process.env.CLIENT_URL, process.env.CLIENT_URL_NETLIFY],
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
-  transports: ["websocket", "polling"],
-});
-
 const corsOptions = {
   origin: (origin, callback) => {
     const allowedOrigins = [
       process.env.CLIENT_URL,
       process.env.CLIENT_URL_NETLIFY,
     ];
-    if (allowedOrigins.includes(origin) || !origin) {
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       console.log(`Blocked by CORS: ${origin}`);
@@ -42,6 +31,18 @@ const corsOptions = {
 app.use(express.json());
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
+const server = http.createServer(app);
+
+const io = socketIO(server, {
+  cors: {
+    origin: [process.env.CLIENT_URL, process.env.CLIENT_URL_NETLIFY],
+    methods: ["GET", "POST"],
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
+  },
+  transports: ["websocket", "polling"],
+});
+
 app.use("/user", userRouter);
 app.use("/game", gameRouter(io));
 
