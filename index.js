@@ -12,7 +12,13 @@ const app = express();
 const PORT = process.env.PORT;
 
 const server = http.createServer(app);
-const io = socketIO(server);
+const io = socketIO(server, {
+  cors: {
+    origin: [process.env.CLIENT_URL, process.env.CLIENT_URL_NETLIFY],
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
 
 const corsOptions = {
   origin: (origin, callback) => {
