@@ -44,8 +44,19 @@ module.exports = (io) => {
       }
     });
 
-    socket.on("disconnect", () => {
+    socket.on("disconnect", async () => {
       console.log("A user disconnected: " + socket.id);
+
+      const game = await Game.findOne({ players: socket.id });
+      if (game) {
+        game.players = game.players.filter((player) => player !== socket.id);
+        if (game.players.length === 0) {
+          await Game.deleteOne({ _id: game._id });
+        } else {
+          await game.save();
+          io.to(game.roomId).emit("playerLeft", { players: game.players });
+        }
+      }
     });
   });
 
