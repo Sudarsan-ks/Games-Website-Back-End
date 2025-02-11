@@ -29,7 +29,7 @@ module.exports = (io) => {
         game.players.push(playerID);
         await game.save();
         socket.join(roomId);
-        gameNamespace
+        io
           .to(roomId)
           .emit("playerJoined", { players: game.players });
         console.log(`${playerID} joined room ${roomId}`);
@@ -39,7 +39,7 @@ module.exports = (io) => {
     });
 
     socket.on("gameMove", ({ roomId, move }) => {
-      gameNamespace.to(roomId).emit("updateGame", move);
+      io.to(roomId).emit("updateGame", move);
     });
 
     socket.on("declareWinner", async ({ roomId, winnerID }) => {
@@ -47,7 +47,7 @@ module.exports = (io) => {
       if (game) {
         game.winner = winnerID;
         await game.save();
-        gameNamespace.to(roomId).emit("gameOver", { winner: winnerID });
+        io.to(roomId).emit("gameOver", { winner: winnerID });
       }
     });
 
@@ -61,7 +61,7 @@ module.exports = (io) => {
           await Game.deleteOne({ _id: game._id });
         } else {
           await game.save();
-          gameNamespace
+          io
             .to(game.roomId)
             .emit("playerLeft", { players: game.players });
         }
