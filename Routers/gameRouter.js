@@ -8,8 +8,9 @@ module.exports = (io) => {
     console.log("A user connected: " + socket.id);
 
     socket.on("createRoom", async ({ gameType, playerID }) => {
-      console.log(`Creating room for ${gameType} by player ${playerID}`);
-
+      if (!mongoose.Types.ObjectId.isValid(playerID)) {
+        return socket.emit("error", "Invalid player ID");
+      }
       const roomId = Math.random().toString(36).substring(2, 10);
       const game = new Game({ roomId, gameType, players: [playerID] });
       await game.save();
@@ -24,14 +25,11 @@ module.exports = (io) => {
       if (!game) {
         return socket.emit("error", "Room not found");
       }
-
       if (game.players.length < 2) {
         game.players.push(playerID);
         await game.save();
         socket.join(roomId);
-        io
-          .to(roomId)
-          .emit("playerJoined", { players: game.players });
+        io.to(roomId).emit("playerJoined", { players: game.players });
         console.log(`${playerID} joined room ${roomId}`);
       } else {
         socket.emit("error", "Room is full");
@@ -43,6 +41,9 @@ module.exports = (io) => {
     });
 
     socket.on("declareWinner", async ({ roomId, winnerID }) => {
+      if (!mongoose.Types.ObjectId.isValid(winnerID)) {
+        return socket.emit("error", "Invalid winner ID");
+      }
       let game = await Game.findOne({ roomId });
       if (game) {
         game.winner = winnerID;
@@ -56,14 +57,14 @@ module.exports = (io) => {
 
       const game = await Game.findOne({ players: socket.id });
       if (game) {
-        game.players = game.players.filter((player) => player !== socket.id);
+        game.players = game.players.filter(
+          (player) => player.toString() !== socket.id
+        );
         if (game.players.length === 0) {
           await Game.deleteOne({ _id: game._id });
         } else {
           await game.save();
-          io
-            .to(game.roomId)
-            .emit("playerLeft", { players: game.players });
+          io.to(game.roomId).emit("playerLeft", { players: game.players });
         }
       }
     });
