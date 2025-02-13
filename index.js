@@ -12,7 +12,7 @@ const app = express();
 const PORT = process.env.PORT;
 const corsOptions = {
   origin: [process.env.CLIENT_URL, process.env.CLIENT_URL_NETLIFY],
-  methods: ["GET", "POST"],
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
 };
 
@@ -24,7 +24,7 @@ const server = http.createServer(app);
 const io = socketIO(server, {
   cors: {
     origin: [process.env.CLIENT_URL, process.env.CLIENT_URL_NETLIFY],
-    methods: ["GET", "POST"],
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
   },
   transports: ["websocket", "polling"],
