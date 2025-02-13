@@ -8,9 +8,6 @@ module.exports = (io) => {
     console.log("A user connected: " + socket.id);
 
     socket.on("createRoom", async ({ gameType, playerID }) => {
-      if (!mongoose.Types.ObjectId.isValid(playerID)) {
-        return socket.emit("error", "Invalid player ID");
-      }
       const roomId = Math.random().toString(36).substring(2, 10);
       const game = new Game({ roomId, gameType, players: [playerID] });
       await game.save();
