@@ -11,7 +11,7 @@ const gameRouter = require("./Routers/gameRouter");
 const app = express();
 const PORT = process.env.PORT;
 const corsOptions = {
-  origin: [process.env.CLIENT_URL, process.env.CLIENT_URL_NETLIFY],
+  origin: "*",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
 };
@@ -40,10 +40,7 @@ app.get("/", (req, res) => {
 });
 
 mongoose
-  .connect(process.env.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.MONGO_URL)
   .then(() => console.log("MONGODB IS CONNECTED"))
   .catch((error) => console.log(error));
 
