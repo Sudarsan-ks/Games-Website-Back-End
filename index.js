@@ -17,8 +17,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
-
 app.use(express.json());
 app.options("*", cors(corsOptions));
 const server = http.createServer(app);
@@ -30,7 +28,8 @@ const io = socketIO(server, {
     credentials: true,
   },
   transports: ["websocket"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  pingTimeout: 60000,
+  pingInterval: 25000,
 });
 
 app.use("/user", userRouter);
