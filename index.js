@@ -14,7 +14,7 @@ app.use(cors({ origin: process.env.CLIENT_URL }));
 app.use(express.json());
 const server = http.createServer(app);
 
-const io = new socketIO(server, {
+const io = socketIO(server, {
   cors: {
     origin: process.env.CLIENT_URL,
     methods: ["GET", "POST"],
