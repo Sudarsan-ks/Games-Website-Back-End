@@ -29,7 +29,8 @@ const io = socketIO(server, {
     methods: ["GET", "POST"],
     credentials: true,
   },
-  transports: ["polling", "websocket"],
+  transports: ["websocket"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 });
 
 app.use("/user", userRouter);
