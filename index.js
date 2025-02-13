@@ -10,26 +10,15 @@ const gameRouter = require("./Routers/gameRouter");
 
 const app = express();
 const PORT = process.env.PORT;
-const corsOptions = {
-  origin: "*",
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true,
-};
-
-app.use(cors(corsOptions));
+app.use(cors({ origin: process.env.CLIENT_URL }));
 app.use(express.json());
-app.options("*", cors(corsOptions));
 const server = http.createServer(app);
 
-const io = socketIO(server, {
+const io = new socketIO(server, {
   cors: {
-    origin: [process.env.CLIENT_URL, process.env.CLIENT_URL_NETLIFY],
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: true,
+    origin: process.env.CLIENT_URL,
+    methods: ["GET", "POST"],
   },
-  transports: ["websocket", "polling"],
-  pingTimeout: 60000,
-  pingInterval: 25000,
 });
 
 app.use("/user", userRouter);
