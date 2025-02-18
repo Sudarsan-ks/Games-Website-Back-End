@@ -32,6 +32,9 @@ module.exports = (io) => {
         socket.join(roomId);
         io.to(roomId).emit("playerJoined", { players: game.players });
         console.log(`${playerID} joined room ${roomId}`);
+        if (game.players.length === 2) {
+          io.to(roomId).emit("gameReady", { roomId, gameType: game.gameType });
+        }
       } else {
         socket.emit("roomFull", "Room is full");
       }
