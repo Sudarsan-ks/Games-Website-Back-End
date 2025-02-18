@@ -33,7 +33,7 @@ module.exports = (io) => {
         io.to(roomId).emit("playerJoined", { players: game.players });
         console.log(`${playerID} joined room ${roomId}`);
       } else {
-        socket.emit("error", "Room is full");
+        socket.emit("roomFull", "Room is full");
       }
     });
 
