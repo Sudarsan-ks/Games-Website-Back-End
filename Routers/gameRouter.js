@@ -1,5 +1,5 @@
 const express = require("express");
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 const router = express.Router();
 const Game = require("../Models/gameSchema");
 const { adminAuth, auth } = require("./auth");
@@ -31,16 +31,21 @@ module.exports = (io) => {
         if (game.players.includes(playerID)) {
           return socket.emit("error", "You are already in the game");
         }
-    
+
         if (game.players.length < 2) {
           game.players.push(playerID);
           await game.save();
           socket.join(roomId);
           io.to(roomId).emit("playerJoined", { players: game.players });
           console.log(`${playerID} joined room ${roomId}`);
-    
+
           if (game.players.length === 2) {
-            io.to(roomId).emit("gameReady", { roomId, gameType: game.gameType });
+            setTimeout(() => {
+              io.to(roomId).emit("gameReady", {
+                roomId,
+                gameType: game.gameType,
+              });
+            }, 500);
           }
         } else {
           socket.emit("roomFull", "Room is full");
