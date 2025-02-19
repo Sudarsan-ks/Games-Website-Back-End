@@ -22,24 +22,34 @@ module.exports = (io) => {
     });
 
     socket.on("joinRoom", async ({ roomId, playerID }) => {
-      let game = await Game.findOne({ roomId });
-      if (!game) {
-        return socket.emit("error", "Room not found");
-      }
-      if (game.players.length < 2) {
-        game.players.push(playerID);
-        await game.save();
-        socket.join(roomId);
-        io.to(roomId).emit("playerJoined", { players: game.players });
-        console.log(`${playerID} joined room ${roomId}`);
-        if (game.players.length === 2) {
-          io.to(roomId).emit("gameReady", { roomId, gameType: game.gameType });
+      try {
+        let game = await Game.findOne({ roomId });
+        if (!game) {
+          return socket.emit("error", "Room not found");
         }
-      } else {
-        socket.emit("roomFull", "Room is full");
+
+        if (game.players.includes(playerID)) {
+          return socket.emit("error", "You are already in the game");
+        }
+    
+        if (game.players.length < 2) {
+          game.players.push(playerID);
+          await game.save();
+          socket.join(roomId);
+          io.to(roomId).emit("playerJoined", { players: game.players });
+          console.log(`${playerID} joined room ${roomId}`);
+    
+          if (game.players.length === 2) {
+            io.to(roomId).emit("gameReady", { roomId, gameType: game.gameType });
+          }
+        } else {
+          socket.emit("roomFull", "Room is full");
+        }
+      } catch (error) {
+        console.error("Error joining room:", error);
+        socket.emit("error", "An error occurred while joining the room");
       }
     });
-
     socket.on("gameMove", ({ roomId, move }) => {
       io.to(roomId).emit("updateGame", move);
     });
