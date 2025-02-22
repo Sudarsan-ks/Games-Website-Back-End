@@ -55,8 +55,8 @@ module.exports = (io) => {
         socket.emit("error", "An error occurred while joining the room");
       }
     });
-    socket.on("gameMove", ({ roomId, move }) => {
-      io.to(roomId).emit("updateGame", move);
+    socket.on("gameMove", ({ roomId, index, player }) => {
+      io.to(roomId).emit("updateGame", { index, player });
     });
 
     socket.on("declareWinner", async ({ roomId, winnerID }) => {
