@@ -8,8 +8,8 @@ const gameSchema = mongoose.Schema({
     trim: true,
     enum: ["TicTacToe", "RockPaperScissors", "SnakeGame"],
   },
-  players: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  winner: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
+  players: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
+  winner: { type: mongoose.Schema.Types.ObjectId, ref: "user", default: null },
   createdAt: { type: Date, default: Date.now },
 });
 
