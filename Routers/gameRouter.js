@@ -98,7 +98,7 @@ module.exports = (io) => {
     }
   });
 
-  router.get("/roomDetaisl/:roomId", auth, async (req, res) => {
+  router.get("/roomDetail/:roomId", auth, async (req, res) => {
     try {
       const { roomId } = req.params;
       const room = await Game.findOne({ roomId }).populate("players");
