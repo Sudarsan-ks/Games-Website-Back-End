@@ -98,5 +98,15 @@ module.exports = (io) => {
     }
   });
 
+  router.get("/roomDetaisl/:roomId", auth, async (req, res) => {
+    try {
+      const { roomId } = req.params;
+      const room = await Game.findOne({ roomId }).populate("players");
+      res.status(200).json(room);
+    } catch (error) {
+      res.status(500).json({ error: "Error fetching game details" });
+    }
+  });
+
   return router;
 };
