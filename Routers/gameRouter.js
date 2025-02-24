@@ -59,6 +59,10 @@ module.exports = (io) => {
       io.to(roomId).emit("updateGame", { index });
     });
 
+    socket.on("resetTicGame", ({ roomId }) => {
+      io.to(roomId).emit("resetGame");
+  });
+
     socket.on("declareWinner", async ({ roomId, winnerID }) => {
       if (!mongoose.Types.ObjectId.isValid(winnerID)) {
         return socket.emit("error", "Invalid winner ID");
