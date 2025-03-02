@@ -55,13 +55,18 @@ module.exports = (io) => {
         socket.emit("error", "An error occurred while joining the room");
       }
     });
+
     socket.on("tictactoeMove", ({ roomId, index }) => {
       io.to(roomId).emit("updateGame", { index });
     });
 
     socket.on("resetTicGame", ({ roomId }) => {
       io.to(roomId).emit("resetGame");
-  });
+    });
+
+    socket.on("rpsMove", ({ roomId, player, move }) => {
+      socket.to(roomId).emit("updateMove", { player, move });
+    });
 
     socket.on("declareWinner", async ({ roomId, winnerID }) => {
       if (!mongoose.Types.ObjectId.isValid(winnerID)) {
