@@ -12,7 +12,7 @@ const app = express();
 const PORT = process.env.PORT;
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [process.env.CLIENT_URL_NETLIFY, process.env.CLIENT_URL],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
   })
